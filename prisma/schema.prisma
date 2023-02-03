@@ -1,0 +1,40 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  userId   Int       @id @default(autoincrement()) @map("USER_ID")
+  name     String    @default("unknown_name") @map("NAME") @db.VarChar(10)
+  email    String    @unique @map("EMAIL") @db.VarChar(50)
+  profile  String    @map("PROFILE") @db.Text
+  posts    Post[]    @relation("USER_HAVE_MANY_POSTS")
+  UserInfo UserInfo? @relation("USER_DETAIL_INFO") // 1:1 relation
+
+  @@map("USER")
+}
+
+model Post {
+  postId   Int    @id @default(autoincrement()) @map("POST_ID")
+  content  String @map("CONTENT") @db.Text
+  author   User   @relation("USER_HAVE_MANY_POSTS", fields: [authorId], references: [userId])
+  authorId Int    @map("AUTHOR_ID")
+
+  @@map("POST")
+}
+
+model UserInfo {
+  id        Int      @id @default(autoincrement()) @map("USER_ID")
+  height    Int      @map("HEIGHT") @db.Integer
+  weight    Int      @map("WEIGHT") @db.Integer
+  address   String   @map("ADDRESS") @db.Text
+  phone     String   @map("PHONE") @db.VarChar(20)
+  createdAt DateTime @default(now()) @map("CREATED_AT") @db.Timestamptz()
+  user      User     @relation("USER_DETAIL_INFO", fields: [id], references: [userId], onDelete: Cascade)
+
+  @@map("USER_INFO")
+}
