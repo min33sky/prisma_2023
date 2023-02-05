@@ -10,12 +10,19 @@ datasource db {
 model User {
   userId   Int       @id @default(autoincrement()) @map("USER_ID")
   name     String    @default("unknown_name") @map("NAME") @db.VarChar(10)
-  email    String    @unique @map("EMAIL") @db.VarChar(50)
+  email    String    @default(uuid()) @map("EMAIL") @db.VarChar(50) // unique를 줘야하는데 많은 수를 추가하기 위해 해제함
   profile  String    @map("PROFILE") @db.Text
   posts    Post[]    @relation("USER_HAVE_MANY_POSTS")
-  UserInfo UserInfo? @relation("USER_DETAIL_INFO") // 1:1 relation
+  UserInfo UserInfo? @relation("USER_DETAIL_INFO") // 1:1 relation (?을 안붙이면 안된다.)
+  role     Role      @default(USER) @map("ROLE")
 
+  @@index([name], name: "USER_NAME_INDEX", type: Hash)
   @@map("USER")
+}
+
+enum Role {
+  ADMIN
+  USER
 }
 
 model Post {
