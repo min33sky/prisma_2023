@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Post, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Patch, Post, Query } from '@nestjs/common';
 import { UsersService } from './users.service';
 
 @Controller('users')
@@ -15,6 +15,12 @@ export class UsersController {
   async createUsers() {
     const newUsers = await this.userService.createUsers();
     return newUsers;
+  }
+
+  @Patch()
+  async updateUser(@Body() body) {
+    const newInfo = await this.userService.updateUser(body);
+    return newInfo;
   }
 
   @Delete()

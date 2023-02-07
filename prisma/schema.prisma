@@ -41,7 +41,8 @@ model UserInfo {
   address   String   @map("ADDRESS") @db.Text
   phone     String   @map("PHONE") @db.VarChar(20)
   createdAt DateTime @default(now()) @map("CREATED_AT") @db.Timestamptz()
-  user      User     @relation("USER_DETAIL_INFO", fields: [id], references: [userId], onDelete: Cascade)
+  updatedAt DateTime @updatedAt @map("UPDATED_AT") @db.Timestamptz()
+  user      User     @relation("USER_DETAIL_INFO", fields: [id], references: [userId], onDelete: Cascade, onUpdate: Cascade)
 
   @@map("USER_INFO")
 }

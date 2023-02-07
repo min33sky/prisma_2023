@@ -15,7 +15,7 @@ export class UsersService {
         profile: payload.profile,
         UserInfo: {
           create: {
-            height: Math.floor(Math.random() * 100),
+            height: Math.floor(Math.random() * 100) + 100,
             address: faker.address.city(),
             weight: Math.floor(Math.random() * 100),
             phone: faker.phone.number(),
@@ -45,6 +45,21 @@ export class UsersService {
     });
 
     return newUsers;
+  }
+
+  async updateUser(payload) {
+    const newInfo = await this.prisma.userInfo.update({
+      where: {
+        id: payload.id,
+      },
+      data: {
+        height: {
+          set: Number(payload.height), //? 숫자와 관련된 부분은 직접 넣기보다는 Atomic 연산을 사용하는 것이 좋다. (트랜잭션 보장)
+        },
+      },
+    });
+
+    return newInfo;
   }
 
   async deleteUser(userId: number) {
