@@ -7,3 +7,9 @@
 ```bash
 $ yarn
 ```
+
+## Add Database seed
+
+```bash
+$ yarn seed
+```

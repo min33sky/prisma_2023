@@ -1,10 +1,28 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["multiSchema"] // 다중 스키마 적용
 }
 
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+  schemas  = ["study", "statistic", "sub", "test"]
+}
+
+enum Provider {
+  GOOGLE
+  KAKAO
+  NAVER
+  ETC
+
+  @@schema("study")
+}
+
+enum Role {
+  ADMIN
+  USER
+
+  @@schema("study")
 }
 
 model User {
@@ -12,37 +30,54 @@ model User {
   name     String    @default("unknown_name") @map("NAME") @db.VarChar(10)
   email    String    @default(uuid()) @map("EMAIL") @db.VarChar(50) // unique를 줘야하는데 많은 수를 추가하기 위해 해제함
   profile  String    @map("PROFILE") @db.Text
+  provider Provider  @default(ETC) @map("PROVIDER")
   posts    Post[]    @relation("USER_HAVE_MANY_POSTS")
   UserInfo UserInfo? @relation("USER_DETAIL_INFO") // 1:1 relation (?을 안붙이면 안된다.)
   role     Role      @default(USER) @map("ROLE")
 
+  @@unique(name: "USER_PRO_EMAIL_UNIQ", fields: [email, provider])
   @@index([name], name: "USER_NAME_INDEX", type: Hash)
   @@map("USER")
-}
-
-enum Role {
-  ADMIN
-  USER
+  @@schema("study")
 }
 
 model Post {
   postId   Int    @id @default(autoincrement()) @map("POST_ID")
   content  String @map("CONTENT") @db.Text
-  author   User   @relation("USER_HAVE_MANY_POSTS", fields: [authorId], references: [userId])
-  authorId Int    @map("AUTHOR_ID")
+  writer   User   @relation("USER_HAVE_MANY_POSTS", fields: [writerId], references: [userId])
+  writerId Int    @map("WRITER_ID")
 
   @@map("POST")
+  @@schema("study")
 }
 
 model UserInfo {
-  id        Int      @id @default(autoincrement()) @map("USER_ID")
+  userId    Int      @id @default(1) @map("USER_ID")
   height    Int      @map("HEIGHT") @db.Integer
   weight    Int      @map("WEIGHT") @db.Integer
   address   String   @map("ADDRESS") @db.Text
-  phone     String   @map("PHONE") @db.VarChar(20)
   createdAt DateTime @default(now()) @map("CREATED_AT") @db.Timestamptz()
   updatedAt DateTime @updatedAt @map("UPDATED_AT") @db.Timestamptz()
-  user      User     @relation("USER_DETAIL_INFO", fields: [id], references: [userId], onDelete: Cascade, onUpdate: Cascade)
+  user      User     @relation("USER_DETAIL_INFO", fields: [userId], references: [userId], onDelete: Cascade, onUpdate: Cascade)
 
   @@map("USER_INFO")
+  @@schema("study")
+}
+
+model TestTable {
+  id Int @id @map("TEST_ID")
+
+  @@schema("test")
+}
+
+model SubTable {
+  id Int @id @map("SUB_ID")
+
+  @@schema("sub")
+}
+
+model Statistic {
+  id Int @id @map("STATISTIC_ID")
+
+  @@schema("statistic")
 }
