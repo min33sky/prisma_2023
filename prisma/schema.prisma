@@ -57,7 +57,7 @@ model UserInfo {
   weight    Int      @map("WEIGHT") @db.Integer
   address   String   @map("ADDRESS") @db.Text
   createdAt DateTime @default(now()) @map("CREATED_AT") @db.Timestamptz()
-  updatedAt DateTime @updatedAt @map("UPDATED_AT") @db.Timestamptz()
+  updatedAt DateTime @default(now()) @updatedAt @map("UPDATED_AT") @db.Timestamptz()
   user      User     @relation("USER_DETAIL_INFO", fields: [userId], references: [userId], onDelete: Cascade, onUpdate: Cascade)
 
   @@map("USER_INFO")

@@ -16,10 +16,10 @@ const createSeed = async () => {
 
 const createUsers = () => {
   for (let i = 0; i < 5000; i++) {
-    // NAME, EMAIL, PROFILE, PROVIDER, ROLE
-    const query = `\n'${faker.name.lastName()}', '${faker.internet.email()}', '${faker.lorem.sentence()}', '${
-      ['GOOGLE', 'KAKAO', 'NAVER', 'ETC'][Math.floor(Math.random() * 4)]
-    }', '${['USER', 'ADMIN'][Math.floor(Math.random() * 2)]}'`;
+    // USER_ID, NAME, EMAIL, PROFILE, PROVIDER, ROLE
+    const query = `\n${
+      i + 1
+    }, ${faker.name.lastName()}, ${faker.internet.email()}, ${faker.lorem.sentence()}`;
 
     fs.appendFile('./src/seed/user.csv', query, 'utf8', (e) => {
       if (e) {
@@ -32,7 +32,7 @@ const createUsers = () => {
 const createPosts = () => {
   for (let i = 0; i < 5000; i++) {
     // CONTENT, WRITER_ID
-    const query = `\n'${faker.lorem.sentence()}', ${Math.ceil(
+    const query = `\n${faker.lorem.sentence()}, ${Math.ceil(
       Math.random() * 5000,
     )}`;
 
@@ -49,7 +49,7 @@ const createUserInfos = () => {
     // USER_ID, HEIGHT, WEIGHT, ADDRESS
     const query = `\n${Math.ceil(Math.random() * 5000)}, ${
       Math.floor(Math.random() * 100) + 50
-    }, ${Math.floor(Math.random() * 80) + 100}, '${faker.address.city()}'`;
+    }, ${Math.floor(Math.random() * 80) + 100}, ${faker.address.city()}`;
 
     fs.appendFile('./src/seed/user_info.csv', query, 'utf8', (e) => {
       if (e) {

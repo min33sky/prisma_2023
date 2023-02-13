@@ -18,7 +18,6 @@ export class UsersService {
             height: Math.floor(Math.random() * 100) + 100,
             address: faker.address.city(),
             weight: Math.floor(Math.random() * 100),
-            phone: faker.phone.number(),
           },
         },
       },
@@ -50,7 +49,7 @@ export class UsersService {
   async updateUser(payload) {
     const newInfo = await this.prisma.userInfo.update({
       where: {
-        id: payload.id,
+        userId: payload.userId,
       },
       data: {
         height: {

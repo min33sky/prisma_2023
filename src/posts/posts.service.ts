@@ -10,9 +10,9 @@ export class PostsService {
     const newPost = await this.prisma.post.create({
       data: {
         content: payload.content,
-        author: {
+        writer: {
           connect: {
-            userId: Math.ceil(Math.random() * 1000013),
+            userId: payload.writerId,
           },
         },
       },
