@@ -1,11 +1,51 @@
 import { faker } from '@faker-js/faker';
-import { Injectable } from '@nestjs/common';
-import { Prisma } from '@prisma/client';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { Prisma, Provider } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class UsersService {
   constructor(private readonly prisma: PrismaService) {}
+
+  async getUsers() {
+    return await this.prisma.user.findMany({
+      where: {
+        AND: [
+          {
+            UserInfo: {
+              weight: {
+                lt: 80,
+              },
+            },
+          },
+        ],
+      },
+      select: {
+        userId: true,
+        name: true,
+        UserInfo: {
+          select: {
+            weight: true,
+            height: true,
+          },
+        },
+      },
+    });
+  }
+
+  async getUser(userId: number) {
+    const exUser = await this.prisma.user.findUnique({
+      where: {
+        userId,
+      },
+    });
+
+    if (!exUser) {
+      throw new NotFoundException('User not found');
+    }
+
+    return exUser;
+  }
 
   async createUser(payload: Prisma.UserCreateInput) {
     const newUser = await this.prisma.user.create({

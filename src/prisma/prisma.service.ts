@@ -20,9 +20,13 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
 
     // 미들웨어 적용
     this.$use(async (params, next) => {
+      const startTime = Date.now();
       console.log('미들웨어 로그 : ', params);
 
       const result = await next(params);
+      const endTime = Date.now();
+
+      console.log(`##### 쿼리 소요 시간 : ${endTime - startTime}ms`);
 
       return result;
     });
