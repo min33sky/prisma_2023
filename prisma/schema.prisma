@@ -1,12 +1,12 @@
 generator client {
   provider        = "prisma-client-js"
-  previewFeatures = ["multiSchema"] // 다중 스키마 적용
+  previewFeatures = ["multiSchema"] // 다중 스키마 기능 적용
 }
 
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
-  schemas  = ["study", "statistic", "sub", "test"]
+  schemas  = ["study", "statistic", "sub", "test"] // 사용할 스키마 목록
 }
 
 enum Provider {
@@ -28,7 +28,7 @@ enum Role {
 model User {
   userId   Int       @id @default(autoincrement()) @map("USER_ID")
   name     String    @default("unknown_name") @map("NAME") @db.VarChar(20)
-  email    String    @default(uuid()) @map("EMAIL") @db.VarChar(50) // unique를 줘야하는데 많은 수를 추가하기 위해 해제함
+  email    String    @default(uuid()) @map("EMAIL") @db.VarChar(50) // 원래는 unique를 줘야하는데 연습용으로 많은 수를 추가하기 위해 해제함
   profile  String    @map("PROFILE") @db.Text
   role     Role      @default(USER) @map("ROLE")
   provider Provider  @default(ETC) @map("PROVIDER")
